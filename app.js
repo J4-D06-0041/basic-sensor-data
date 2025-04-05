@@ -28,7 +28,7 @@ connection.connect(err => {
 
 // Route to render the index page
 app.get('/', (req, res) => {
-  res.render('index');
+  res.sendFile(__dirname + '/views/index.html');
 });
 
 // Route to fetch sensor data as JSON
@@ -47,6 +47,7 @@ app.post('/add-sensor-data', (req, res) => {
 
   const gas = 0;
   const recorded_at = new Date();
+
   // Insert data into sensor_data table
   const sensorDataQuery = 'INSERT INTO sensor_data (temperature, humidity, gas, recorded_at) VALUES (?, ?, ?, ?)';
   connection.query(sensorDataQuery, [temperature, humidity, gas, recorded_at], (err, results) => {
@@ -55,16 +56,14 @@ app.post('/add-sensor-data', (req, res) => {
       return res.status(500).send('Error inserting sensor data');
     }
 
-    // Insert data into sensor_status table
-    //   const sensorStatusQuery = 'INSERT INTO sensor_status (sensorID, status, updated_at) VALUES (?, ?, ?)';
-    //   connection.query(sensorStatusQuery, [sensorID, status, new Date()], (err, results) => {
-    //     if (err) {
-    //       console.error('Error inserting sensor status:', err);
-    //       return res.status(500).send('Error inserting sensor status');
-    //     }
+    // Log the query results
+    console.log('Sensor data inserted:', results);
 
-    res.status(200).send('Sensor data and status inserted successfully');
-    //   });
+    // Return the query results in the response
+    res.status(200).json({
+      message: 'Sensor data inserted successfully!',
+      queryResults: results
+    });
   });
 });
 

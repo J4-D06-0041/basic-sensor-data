@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Data</title>
+  <script>
+    // Function to fetch and update the table with sensor data
+    function fetchSensorData() {
+      fetch('/get-sensor-data')
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.getElementById('sensor-data-table-body');
+          tableBody.innerHTML = ''; // Clear previous data
+
+          // Populate the table with new data
+          data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${row.temperature}</td>
+              <td>${row.humidity}</td>
+              <td>${row.gas}</td>
+              <td>${row.recorded_at}</td>
+            `;
+            tableBody.appendChild(tr);
+          });
+        })
+        .catch(error => console.error('Error fetching sensor data:', error));
+    }
+
+    // Fetch data every 5 seconds
+    setInterval(fetchSensorData, 5000);
+
+    // Initial fetch
+    document.addEventListener('DOMContentLoaded', fetchSensorData);
+  </script>
+</head>
+<body>
+  <h1>Sensor Data</h1>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Temperature</th>
+        <th>Humidity</th>
+        <th>Gas</th>
+        <th>Recorded At</th>
+      </tr>
+    </thead>
+    <tbody id="sensor-data-table-body">
+      <!-- Data will be inserted here by JavaScript -->
+    </tbody>
+  </table>
+</body>
+</html>
