@@ -26,10 +26,20 @@ connection.connect(err => {
 
 // Route to fetch and display users
 app.get('/', (req, res) => {
-  connection.query('SELECT * FROM sensor_data order by recorded_at desc', (err, results) => {
-    if (err) throw err;
-    res.render('index', { sensorData: results });
+    connection.query('SELECT * FROM sensor_data order by recorded_at desc', (err, results) => {
+        if (err) throw err;
+        res.render('index', { sensorData: results });
   });
+});
+
+app.get('/sensor-status', (req, res) => {
+    connection.query('SELECT * FROM sensor_status ORDER BY updated_at DESC LIMIT 1', (err, results) => {
+        if (err) {
+            console.error('Error fetching sensor status:', err);
+            return res.status(500).send('Error fetching sensor status');
+        }
+        res.status(200).json(results);
+    });
 });
 
 app.post('/add-sensor-data', (req, res) => {
