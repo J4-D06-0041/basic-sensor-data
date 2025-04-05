@@ -5,6 +5,8 @@ const app = express();
 
 // Use EJS for rendering
 app.set('view engine', 'ejs');
+// Add this middleware to handle JSON requests
+app.use(express.json());
 
 // Create MySQL connection
 const connection = mysql.createConnection({
