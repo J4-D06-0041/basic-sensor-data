@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 
 // Route to fetch sensor data as JSON
 app.get('/get-sensor-data', (req, res) => {
-  connection.query('SELECT * FROM sensor_data ORDER BY recorded_at DESC LIMIT 20', (err, results) => {
+  connection.query('SELECT * FROM sensor_data ORDER BY id DESC LIMIT 20', (err, results) => {
     if (err) {
       console.error('Error fetching sensor data:', err);
       return res.status(500).send('Error fetching data');
