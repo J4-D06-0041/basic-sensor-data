@@ -6,16 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sensor Data</title>
     <style>
+        /* Style for the container of the label and dot */
+        .header-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
         /* Style for the pulsating dot */
         #status-dot {
-            position: absolute;
-            top: 10px;
-            left: 10px;
+            position: relative;
             width: 20px;
             height: 20px;
             border-radius: 50%;
             background-color: green;
             animation: pulsate 1s infinite;
+            margin-right: 10px; /* Space between dot and label */
         }
 
         /* Pulsating effect */
@@ -110,8 +117,10 @@
 </head>
 
 <body>
-    <div id="status-dot"></div> <!-- Pulsating dot -->
-    <h1>Sensor Data</h1>
+    <div class="header-container">
+        <span id="status-dot"></span> <!-- Pulsating dot -->
+        <h1>Sensor Data</h1>
+    </div>
     <table border="1">
         <thead>
             <tr>
