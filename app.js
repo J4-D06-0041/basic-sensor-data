@@ -26,7 +26,7 @@ connection.connect(err => {
 
 // Route to fetch and display users
 app.get('/', (req, res) => {
-  connection.query('SELECT * FROM sensor_data', (err, results) => {
+  connection.query('SELECT * FROM sensor_data order by recorded_at desc', (err, results) => {
     if (err) throw err;
     res.render('index', { sensorData: results });
   });
