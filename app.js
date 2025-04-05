@@ -26,19 +26,17 @@ connection.connect(err => {
   console.log('Connected to MySQL.');
 });
 
-// Route to fetch and display users
+// Route to render the index page
 app.get('/', (req, res) => {
-    connection.query('SELECT * FROM sensor_data order by recorded_at desc', (err, results) => {
-        if (err) throw err;
-        res.render('index', { sensorData: results });
-  });
+    res.render('index');
 });
 
-app.get('/sensor-status', (req, res) => {
-    connection.query('SELECT * FROM sensor_status ORDER BY updated_at DESC LIMIT 1', (err, results) => {
+// Route to fetch sensor data as JSON
+app.get('/get-sensor-data', (req, res) => {
+    connection.query('SELECT * FROM sensor_data ORDER BY recorded_at DESC LIMIT 20', (err, results) => {
         if (err) {
-            console.error('Error fetching sensor status:', err);
-            return res.status(500).send('Error fetching sensor status');
+            console.error('Error fetching sensor data:', err);
+            return res.status(500).send('Error fetching data');
         }
         res.status(200).json(results);
     });

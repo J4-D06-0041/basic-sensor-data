@@ -1,90 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensor Data</title>
-    <style>
-        /* Style for the pulsating dot */
-        .status-dot {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background-color: green; /* Default color */
-            animation: pulsate 1s infinite ease-in-out;
-        }
-
-        @keyframes pulsate {
-            0% {
-                transform: scale(0.8);
-            }
-            50% {
-                transform: scale(1.2);
-            }
-            100% {
-                transform: scale(0.8);
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Data</title>
+  <style>
+    /* Add your styles here */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 8px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <!-- Status Dot -->
-    <div id="status-dot" class="status-dot"></div>
+  <h1>Sensor Data</h1>
+  <table id="sensor-data-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Temperature</th>
+        <th>Humidity</th>
+        <th>Recorded At</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Sensor data will be populated here -->
+    </tbody>
+  </table>
 
-    <table id="sensor-table">
-        <thead>
-            <tr>
-                <th>Temperature</th>
-                <th>Humidity</th>
-                <th>Gas</th>
-                <th>Recorded At</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% sensorData.forEach(data => { %>
-                <tr>
-                    <td><%= data.temperature %></td>
-                    <td><%= data.humidity %></td>
-                    <td><%= data.gas %></td>
-                    <td><%= data.recorded_at %></td>
-                </tr>
-            <% }) %>
-        </tbody>
-    </table>
+  <script>
+    // Fetch the sensor data from the /get-sensor-data endpoint
+    function fetchSensorData() {
+      fetch('/get-sensor-data')
+        .then(response => response.json())
+        .then(data => {
+          const tableBody = document.querySelector('#sensor-data-table tbody');
+          tableBody.innerHTML = ''; // Clear existing rows
+          
+          // Loop through the data and create a row for each sensor data entry
+          data.forEach(sensor => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${sensor.id}</td>
+              <td>${sensor.temperature}</td>
+              <td>${sensor.humidity}</td>
+              <td>${new Date(sensor.recorded_at).toLocaleString()}</td>
+            `;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch(error => {
+          console.error('Error fetching sensor data:', error);
+        });
+    }
 
-    <script>
-        function updateSensorData() {
-            fetch('/')
-                .then(response => response.text())
-                .then(data => {
-                    // Update the table with the new data
-                    document.querySelector('#sensor-table tbody').innerHTML = data;
+    // Call fetchSensorData function to populate the table when the page loads
+    window.onload = function() {
+      fetchSensorData();
+    };
 
-                    // Get the timestamp of the most recent data
-                    const latestRow = document.querySelector('#sensor-table tbody tr:first-child');
-                    if (latestRow) {
-                        const recordedAt = latestRow.querySelector('td:last-child').innerText;
-                        const latestTimestamp = new Date(recordedAt).getTime();
-                        const currentTime = new Date().getTime();
-                        
-                        // Check if the latest data is older than 10 seconds
-                        if ((currentTime - latestTimestamp) > 10000) { // More than 10 seconds
-                            document.getElementById('status-dot').style.backgroundColor = 'red';
-                        } else { // Within 10 seconds
-                            document.getElementById('status-dot').style.backgroundColor = 'green';
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching sensor data:', error);
-                });
-        }
-
-        // Update sensor data every 5 seconds
-        setInterval(updateSensorData, 5000);
-    </script>
+    // Optionally, you can call fetchSensorData periodically to update the table every 5 seconds
+    setInterval(fetchSensorData, 5000);
+  </script>
 </body>
 </html>
