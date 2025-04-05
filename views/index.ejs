@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sensor Data Table</title>
+  <style>
+    table {
+      width: 60%;
+      margin: 40px auto;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 20px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align:center;">Sensor Data Table</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Temperature</th>
+        <th>Humidity</th>
+        <th>Gas</th>
+        <th>DateTime</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% sensorData.forEach(data => { %>
+        <tr>
+          <td><%= data.id %></td>
+          <td><%= data.temperature %></td>
+          <td><%= data.humidity %></td>
+          <td><%= data.gas %></td>
+          <td><%= data.recorded_at %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</body>
+</html>
