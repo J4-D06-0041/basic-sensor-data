@@ -28,45 +28,45 @@ connection.connect(err => {
 
 // Route to render the index page
 app.get('/', (req, res) => {
-    res.render('index');
+  res.render('index');
 });
 
 // Route to fetch sensor data as JSON
 app.get('/get-sensor-data', (req, res) => {
-    connection.query('SELECT * FROM sensor_data ORDER BY recorded_at DESC LIMIT 20', (err, results) => {
-        if (err) {
-            console.error('Error fetching sensor data:', err);
-            return res.status(500).send('Error fetching data');
-        }
-        res.status(200).json(results);
-    });
+  connection.query('SELECT * FROM sensor_data ORDER BY recorded_at DESC LIMIT 20', (err, results) => {
+    if (err) {
+      console.error('Error fetching sensor data:', err);
+      return res.status(500).send('Error fetching data');
+    }
+    res.status(200).json(results);
+  });
 });
 
 app.post('/add-sensor-data', (req, res) => {
-    const { temperature, humidity, sensorID, status } = req.body;
-  
-    const gas = 0;
-    const recorded_at = new Date();
-    // Insert data into sensor_data table
-    const sensorDataQuery = 'INSERT INTO sensor_data (temperature, humidity, gas, recorded_at) VALUES (?, ?, ?, ?)';
-    connection.query(sensorDataQuery, [temperature, humidity, gas, recorded_at], (err, results) => {
-      if (err) {
-        console.error('Error inserting sensor data:', err);
-        return res.status(500).send('Error inserting sensor data');
-      }
-  
-      // Insert data into sensor_status table
+  const { temperature, humidity, sensorID, status } = req.body;
+
+  const gas = 0;
+  const recorded_at = new Date();
+  // Insert data into sensor_data table
+  const sensorDataQuery = 'INSERT INTO sensor_data (temperature, humidity, gas, recorded_at) VALUES (?, ?, ?, ?)';
+  connection.query(sensorDataQuery, [temperature, humidity, gas, recorded_at], (err, results) => {
+    if (err) {
+      console.error('Error inserting sensor data:', err);
+      return res.status(500).send('Error inserting sensor data');
+    }
+
+    // Insert data into sensor_status table
     //   const sensorStatusQuery = 'INSERT INTO sensor_status (sensorID, status, updated_at) VALUES (?, ?, ?)';
     //   connection.query(sensorStatusQuery, [sensorID, status, new Date()], (err, results) => {
     //     if (err) {
     //       console.error('Error inserting sensor status:', err);
     //       return res.status(500).send('Error inserting sensor status');
     //     }
-  
-    //     res.status(200).send('Sensor data and status inserted successfully');
+
+    res.status(200).send('Sensor data and status inserted successfully');
     //   });
-    });
   });
+});
 
 // Start the server
 app.listen(3000, () => {
